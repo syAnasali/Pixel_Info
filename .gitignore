@@ -164,3 +164,16 @@ logs/
 wandb/
 mlruns/
 lightning_logs/
+
+# User requested exclusions for repository cleanliness
+venv/
+__pycache__/
+*.pyc
+data/Flickr8k/
+outputs/features/image_features.pkl
+outputs/**/*.pkl
+outputs/**/*.log
+outputs/**/*.csv
+outputs/**/*.txt
+checkpoints/
+models/
