@@ -177,3 +177,15 @@ outputs/**/*.csv
 outputs/**/*.txt
 checkpoints/
 models/
+
+# Exclude source code, configuration files, and documentation from being pushed
+src/
+requirements.txt
+README.md
+.gitignore
+config/
+evaluation/
+inference/
+training/
+model/
+feature_extraction/

@@ -104,14 +104,13 @@ class Trainer:
             self.scaler.unscale_(self.optimizer)
             grad_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
             
-            if torch.isnan(grad_norm):
-                raise ValueError("Gradient norm is NaN. Aborting training.")
-            if torch.isinf(grad_norm):
-                # Under AMP, gradients can be Inf if scaling factor overflows in FP16.
+            if torch.isnan(grad_norm) or torch.isinf(grad_norm):
+                # Under AMP, gradients can be NaN/Inf if scaling factor overflows in FP16.
                 # The GradScaler handles this by skipping the optimizer step and scaling down.
                 # We only abort if not using AMP, or if the scale factor has already shrunk to <= 1.0.
                 if not self.use_amp or (self.scaler.get_scale() <= 1.0):
-                    raise ValueError(f"Gradient norm is Inf (scale: {self.scaler.get_scale() if self.use_amp else 'N/A'}). Aborting training.")
+                    reason = "NaN" if torch.isnan(grad_norm) else "Inf"
+                    raise ValueError(f"Gradient norm is {reason} (scale: {self.scaler.get_scale() if self.use_amp else 'N/A'}). Aborting training.")
             
             self.scaler.step(self.optimizer)
             self.scaler.update()
@@ -283,6 +282,13 @@ class Trainer:
             }
             self.history.append(row)
             self.save_history_csv()
+            
+            # Automatically plot training loss curves after every epoch
+            try:
+                from src.utils.plot_history import plot_training_history
+                plot_training_history(self.history_path, self.history_path.parent / "training_history.png")
+            except Exception as e:
+                logger.error(f"Failed to generate training history plot automatically: {e}")
             
             # 6. Save latest checkpoint after every epoch
             self.save_checkpoint("latest_model.pth", epoch, val_loss)
