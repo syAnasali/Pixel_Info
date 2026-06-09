@@ -77,6 +77,59 @@ def verify_caption_format(df: pd.DataFrame) -> bool:
     logger.info("[SUCCESS] Punctuation and sequence boundaries successfully verified for all captions.")
     return True
 
+def verify_dataset_size(df: pd.DataFrame) -> bool:
+    """
+    Check dataset size parameters:
+    1. Total captions >= 1000
+    2. Unique images referenced >= 1000
+    
+    Generates outputs/dataset_size_validation_report.txt.
+    Aborts execution with sys.exit(1) if check fails.
+    """
+    logger.info("Executing dataset size validation safeguards...")
+    total_captions = len(df)
+    unique_images = df["image"].nunique()
+    
+    report_path = OUTPUT_DIR / "dataset_size_validation_report.txt"
+    
+    passed = (total_captions >= 1000) and (unique_images >= 1000)
+    
+    # Write outputs/dataset_size_validation_report.txt
+    try:
+        with open(report_path, "w", encoding="utf-8") as f:
+            f.write("=" * 60 + "\n")
+            f.write("             Dataset Size Validation Report\n")
+            f.write("=" * 60 + "\n\n")
+            f.write("--- Size Configurations Checked ---\n")
+            f.write(f"Total Captions Found         : {total_captions} (Required: >= 1000)\n")
+            f.write(f"Unique Images Found          : {unique_images} (Required: >= 1000)\n\n")
+            
+            f.write("--- Safeguard Verdict ---\n")
+            if passed:
+                f.write("STATUS: PASSED\n")
+                f.write("Verdict: Safe to proceed. Dataset size meets production requirements.\n")
+            else:
+                f.write("STATUS: FAILED\n")
+                f.write("Verdict: Mock dataset detected. Real Flickr8K captions file required.\n")
+                
+            f.write("\n" + "=" * 60 + "\n")
+            f.write("Report generated successfully.\n")
+        logger.info(f"Saved dataset size validation report to: {report_path}")
+    except Exception as e:
+        logger.error(f"Failed to save dataset size validation report: {e}")
+        
+    if not passed:
+        logger.error("=" * 60)
+        logger.error("Mock dataset detected. Real Flickr8K captions file required.")
+        logger.error(f"  - Current Captions Count: {total_captions} (Required: >= 1000)")
+        logger.error(f"  - Current Images Count  : {unique_images} (Required: >= 1000)")
+        logger.error("=" * 60)
+        # Abort processing directly as requested
+        sys.exit(1)
+        
+    logger.info("[SUCCESS] Dataset size validation safeguards passed.")
+    return True
+
 def run_validation_pipeline():
     logger.info("Initializing Cleaned Captions Validation Pipeline...")
     
@@ -109,6 +162,9 @@ def run_validation_pipeline():
         
         # 4. Verify formatting rules (abort if punctuation or tag checks fail)
         verify_caption_format(df_clean)
+        
+        # 5. Verify dataset size safeguards (abort if it is a mock/toy dataset)
+        verify_dataset_size(df_clean)
         
         # Overwrite cleaned_captions.csv with the fully validated version
         df_clean.to_csv(csv_input, index=False)
