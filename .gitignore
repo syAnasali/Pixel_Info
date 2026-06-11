@@ -1,139 +1,32 @@
-# Byte-compiled / optimized / DLL files
+# ====================================================================
+# Pixel_Info Image Caption Generator - Customized .gitignore
+# ====================================================================
+
+# --------------------------------------------------------------------
+# Python & Bytecode
+# --------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
+
+# --------------------------------------------------------------------
+# Virtual Environments
+# --------------------------------------------------------------------
+venv/
+.venv/
+env/
+ENV/
 lib/
 lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+bin/
+include/
+share/
 
-# PyInstaller
-#  Usually these written to a sibling directory where the pyinstaller command is run
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nosetests/
-.pytest_cache/
-.execnet/
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.flatpak-builder/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-#   For a library or package, you might want to share your .python-version.
-#   For an app, you may want to ignore it.
-# .python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if Pipfile.lock (or requirements.txt) is used, it should be tracked.
-# Pipfile.lock
-
-# poetry
-#   Similar to Pipfile.lock, poetry.lock is generally tracked, but depends on preferences.
-# poetry.lock
-
-# pdm
-#   Similar to Pipfile.lock, pdm.lock is generally tracked, but depends on preferences.
-# pdm.lock
-
-# PEP 582; project local imports without virtual environments
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# IDEs
+# --------------------------------------------------------------------
+# IDEs & Editor Configuration
+# --------------------------------------------------------------------
 .vscode/
 .idea/
 *.suo
@@ -141,51 +34,54 @@ cython_debug/
 *.njsproj
 *.sln
 *.sw?
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# Machine Learning / Deep Learning specific
-# Exclude datasets in data/ but keep gitkeep
+# --------------------------------------------------------------------
+# Jupyter Notebooks
+# --------------------------------------------------------------------
+.ipynb_checkpoints/
+
+# --------------------------------------------------------------------
+# Logs & Diagnostics
+# --------------------------------------------------------------------
+logs/
+*.log
+runs/
+wandb/
+
+# --------------------------------------------------------------------
+# Datasets (Exclude raw data but keep folder structure via .gitkeep)
+# --------------------------------------------------------------------
 data/*
 !data/Flickr8k/
 data/Flickr8k/*
 !data/Flickr8k/.gitkeep
 
-# Exclude training outputs and weights but keep gitkeep
+# --------------------------------------------------------------------
+# Model Checkpoints (Exclude weights but keep folder structure via .gitkeep)
+# --------------------------------------------------------------------
+checkpoints/*
+!checkpoints/.gitkeep
+
+# --------------------------------------------------------------------
+# Generated Outputs & Cache (Exclude generated files but keep .gitkeep)
+# --------------------------------------------------------------------
 outputs/*
 !outputs/.gitkeep
-*.pt
-*.pth
-*.onnx
-*.bin
+
+# Exclude serialized pickle files
 *.pkl
+*.pickle
 
-# TensorBoard & logging
-runs/
-logs/
-wandb/
-mlruns/
-lightning_logs/
-
-# User requested exclusions for repository cleanliness
-venv/
-__pycache__/
-*.pyc
-data/Flickr8k/
-outputs/features/image_features.pkl
-outputs/**/*.pkl
-outputs/**/*.log
-outputs/**/*.csv
-outputs/**/*.txt
-checkpoints/
-models/
-
-# Exclude source code, configuration files, and documentation from being pushed
-src/
-requirements.txt
-README.md
-.gitignore
-config/
-evaluation/
-inference/
-training/
-model/
-feature_extraction/
+# --------------------------------------------------------------------
+# Testing & Build Artifacts
+# --------------------------------------------------------------------
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
